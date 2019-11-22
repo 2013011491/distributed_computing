@@ -1,0 +1,6 @@
+INFO [11-19|23:20:41.054] Maximum peer count                       ETH=50 LES=0 total=50
+INFO [11-19|23:20:41.054] Smartcard socket not found, disabling    err="stat /run/pcscd/pcscd.comm: no such file or directory"
+INFO [11-19|23:20:41.055] Starting peer-to-peer node               instance=Geth/v1.9.8-unstable-b9c90c55-20191119/linux-amd64/go1.12.7
+INFO [11-19|23:20:41.055] Allocated trie memory caches             clean=256.00MiB dirty=256.00MiB
+INFO [11-19|23:20:41.055] Allocated cache and file handles         database=/home/anchan0/distributed_computing/ethereum/data/geth/chaindata cache=512.00MiB handles=2048
+Fatal: Error starting protocol stack: write /home/anchan0/distributed_computing/ethereum/data/geth/chaindata/000008.ldb: no space left on device
