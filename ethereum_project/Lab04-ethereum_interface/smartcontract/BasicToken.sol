@@ -1,12 +1,9 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "./IERC20.sol";
 import "./ICarTrade.sol";
-import "./SafeMath.sol";
 
-contract BasicToken is IERC20, ICarTrade{
-		using SafeMath for uint256;
+contract BasicToken is ICarTrade{
 
 		uint car_num=0;
 		uint256 totalSupply_;
@@ -20,13 +17,12 @@ contract BasicToken is IERC20, ICarTrade{
 		Car[] internal Cars;
 		Order[] internal Orders;
 
-		uint256 public constant INITIAL_SUPPLY = 10000;
-
 		constructor() public {
-				totalSupply_ = 1000000;
-				UserInfo memory temp = UserInfo(INITIAL_SUPPLY,"");
+				UserInfo memory temp = UserInfo(msg.sender.balance,"");
 				_balances[msg.sender]=temp;
 		}
+		
+        event Transfer(address indexed from, address indexed to, uint256 value);
 		
 		function registerCar(string memory make, string memory model, string memory color) public {
 				Car memory _car= Car(car_num++,_balances[msg.sender].name,make,model,color,msg.sender);
@@ -41,7 +37,7 @@ contract BasicToken is IERC20, ICarTrade{
 						}
 				}
 				for(uint i=0; i<Orders.length; ++i) {
-						if(keccak256(abi.encodePacked(Orders[i].status))==keccak256(abi.encodePacked("sale"))) {
+						if(Orders[i].car.owner==msg.sender && keccak256(abi.encodePacked(Orders[i].status))==keccak256(abi.encodePacked("sale"))) {
 								Orders[i].car.owner_name=name;
 						}
 				}
@@ -75,7 +71,11 @@ contract BasicToken is IERC20, ICarTrade{
 								MyCars[j++]=Cars[i];
 						}
 				}
-				return MyCars;
+				Car[] memory _mycars = new Car[](j);
+				for(uint i=0; i<j; ++i) {
+						_mycars[i]=MyCars[i];
+				}
+				return _mycars;
 		}
 				
      	function getName() public view returns(string memory) {
@@ -94,12 +94,16 @@ contract BasicToken is IERC20, ICarTrade{
 								AllOrders[j++]=Orders[i];
 						}
 				}
-				return AllOrders;
+				Order[] memory _orders = new Order[](j);
+				for(uint i=0; i<j; ++i) {
+						_orders[i]=AllOrders[i];
+				}
+				return _orders;
 		}
 
-     	function balanceTransfer(address payable seller, uint price) payable public {
-				_balances[msg.sender].money = _balances[msg.sender].money.sub(price);
-				_balances[seller].money = _balances[seller].money.add(price);
+     	function balanceTransfer(address payable seller, uint256 price) payable public {
+				price = price *10 **18;
+				seller.transfer(price);
 		}		
 
      	function buyUserCar(uint orderedcnumber) payable public {
@@ -113,7 +117,6 @@ contract BasicToken is IERC20, ICarTrade{
 								break;
 						}
 				}
-				require(_balances[msg.sender].money>=price);
 				balanceTransfer(seller,price);
 				changeCarOwner(orderedcnumber,msg.sender);
 				for(uint i=0; i<Orders.length; ++i) {
@@ -123,17 +126,5 @@ contract BasicToken is IERC20, ICarTrade{
 						}
 				}
 		}
-
-		function totalSupply() external view returns (uint256) {
-				return totalSupply_;
-		}
-
-		function balanceOf(address user) external view returns (uint256) {
-				return _balances[user].money;
-		}
-
-		function transfer(address payable to, uint256 value) payable external returns (bool) {
-				balanceTransfer(to,value);
-				return true;
-		}
 }	
+
