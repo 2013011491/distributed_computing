@@ -4,7 +4,9 @@ var html ="";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
- 	res.render('index', {address : html });
+ 	res.setTimeout(1000,function(){
+		res.render('index', {address : html });
+	});
 });
 
 router.post('/',function(req, res, next) {

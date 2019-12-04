@@ -357,7 +357,9 @@ var getName = async function() {
 var registerName = async function() {
 	admin_address= await $('#address').text();
 	var cname = await document.getElementById("change_name").value;
+	console.log(1);
 	await carTrade.methods.registerName(cname).send({from:admin_address,gas:5000000,value:0});
+	console.log(2);
 }
 
 
