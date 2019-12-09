@@ -35,9 +35,9 @@ var invoke = async function(name, fun, args){
         // Get the contract from the network.
         const contract = network.getContract('mycc');
 
-        
-        //await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom'); -> call invoke function in chaincode
-        console.log('Transaction has been submitted');
+        //call invoke function in chaincode
+        await contract.submitTransaction('invoke',args); 
+		console.log('Transaction has been submitted');
 
         // Disconnect from the gateway.
         await gateway.disconnect();

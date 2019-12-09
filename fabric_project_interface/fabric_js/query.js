@@ -35,9 +35,11 @@ var query = async function(name){
         // Get the contract from the network.
         const contract = network.getContract('mycc');
 
-        //const result = await contract.evaluateTransaction('queryCar', 'CAR12');
+        const result = await contract.evaluateTransaction('invoke', name);
         console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-
+		
+			
+		return result;
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
         process.exit(1);
