@@ -20,7 +20,7 @@ var registerUser = async function(name) {
         // Check to see if we've already enrolled the user.
         const userExists = await wallet.exists(name);
         if (userExists) {
-            alert('An identity for the user already exists in the wallet');
+            console.log('An identity for the user already exists in the wallet');
             return;
         }
 

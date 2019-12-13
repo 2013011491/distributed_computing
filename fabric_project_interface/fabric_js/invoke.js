@@ -34,10 +34,17 @@ var invoke = async function(name, fun, args){
 
         // Get the contract from the network.
         const contract = network.getContract('mycc');
+		console.log(args);
+		if(fun=="registerCar") {
+        	await contract.submitTransaction(fun,args[0],args[1],args[2],args[3]); 
+		}else if(fun=="sellMyCar") {
+			await contract.submitTransaction(fun,args);
+		}else if(fun=="buyUserCar") {
+			await contract.submitTransaction(fun,args[0],args[1]);
+		}
+		// console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
 
-        //call invoke function in chaincode
-        await contract.submitTransaction('invoke',args); 
-		console.log('Transaction has been submitted');
+        console.log('Transaction has been submitted');
 
         // Disconnect from the gateway.
         await gateway.disconnect();

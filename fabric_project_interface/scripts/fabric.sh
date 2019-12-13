@@ -23,10 +23,31 @@ peer chaincode install -n mycc -v 1.0 -l java -p /opt/gopath/src/github.com/chai
 peer chaincode list --installed
 
 # instantiate chaincode
-peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l java -v 1.0 -c '{"function":"init","Args":[]}'
+peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l java -v 1.0 -c '{"function":"init","Args":["a", "100", "b", "100"]}'
 
 # invoke chaincode
 peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"query", "Args":[]}'
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"registerCar", "Args":["bmw","s300","red","a"]}'
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"registerCar", "Args":["KIA","SONATA","black","a"]}'
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"registerCar", "Args":["benz","s700","green","b"]}'
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"sellMyCar", "Args":["CAR000"]}'
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"buyUserCar", "Args":["CAR000","b"]}'
+
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"getMyCar", "Args":["a"]}'
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"getAllRegisteredCar", "Args":[]}'
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"function":"getAllOrderedCar", "Args":[]}'
+
+
+
+
 
 # query chaincode
 peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'

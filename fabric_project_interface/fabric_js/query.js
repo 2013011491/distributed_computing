@@ -35,11 +35,66 @@ var query = async function(name){
         // Get the contract from the network.
         const contract = network.getContract('mycc');
 
-        const result = await contract.evaluateTransaction('invoke', name);
-        console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-		
-			
-		return result;
+        //execute query function
+        const mycars = await contract.submitTransaction('getMyCar',name);
+		const allcars= await contract.submitTransaction('getAllRegisteredCar',name);
+		const orders = await contract.submitTransaction('getAllOrderedCar',name);
+        var multi=[];
+
+       // const result = await contract.evaluateTransaction('getMyCar',name);
+		var after=mycars.toString('utf8').substring(1);
+		var table=[];
+		//query result value(string), string to json and use 
+        for(var i=0; i<after.length; ++i) {
+			if(after[i]=='{') {
+				var j=i;
+				while(after[i++]!='}') {}		
+				var test = JSON.parse(after.substring(j,i)); // -> string to json
+				table.push(test['key']);
+				table.push(test['owner']);
+				table.push(test['make']);
+				table.push(test['model']);
+				table.push(test['color']);
+			}
+		}
+		multi.push(table);
+	
+		table=[];
+		after=allcars.toString('utf8').substring(1);
+        for(var i=0; i<after.length; ++i) {
+			if(after[i]=='{') {
+				var j=i;
+				while(after[i++]!='}') {}		
+				var test = JSON.parse(after.substring(j,i)); // -> string to json
+				table.push(test['key']);
+				table.push(test['owner']);
+				table.push(test['make']);
+				table.push(test['model']);
+				table.push(test['color']);
+			}
+		}
+		multi.push(table);
+
+		table=[];
+		after=orders.toString('utf8').substring(1);
+        for(var i=0; i<after.length; ++i) {
+			if(after[i]=='{') {
+				var j=i;
+				while(after[i++]!='}') {}		
+				var test = JSON.parse(after.substring(j,i)); // -> string to json
+				table.push(test['carid']);
+				table.push(test['owner']);
+				table.push(test['make']);
+				table.push(test['model']);
+				table.push(test['color']);
+				table.push(test['price']);
+				table.push(test['status']);
+			}
+		}
+		multi.push(table);
+        return multi;
+        
+
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
         process.exit(1);

@@ -5,53 +5,72 @@ var query = require('../fabric_js/query.js')
 var invoke = require('../fabric_js/invoke.js')
 var router = express.Router();
 
-let name;
-
-var registeredCars;
-var carsOnSale;
+let user;
 var myCars;
-var mycars_category;
-var sale_category;
+var carsOnSale;
+var registeredCars;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	res.render('index', { name: req.cookies.user });
+	console.log('main page')
+ 	res.render('index', { name: req.cookies.user, myCars:myCars, registeredCars:registeredCars,
+			carsOnSale:carsOnSale});
 });
 
-router.get('/registerCar', function(req, res, next) {
-	console.log(1);
-	/*invoke.invoke(name,"registerCar",["registerCar",req.body.make,req.body.model,req.body.color,name]);
-	registeredCars=query.query("getAllRegisteredCar");
-	myCars=query.query("getMyCar");
-	console.log(myCars);*/	
-	
-	res.setTimeout(1000,function() {
-		res.render('index', { name: req.cookies.user });
-	});
-});
-
-router.get('/sellMyCar', function(req, res, next) {
-	invoke.invoke(name,"sellMyCar",["sellMyCar",req.body.mycars-category,req.body.price]);
-	res.render('index', { name: req.cookies.user });
-});
-
-router.get('/buyCar', function(req, res, next) {
-	invoke.invoke(name,"buyUserCar",["buyUserCar",req.body.sale-category,name]);
-	res.render('index', { name: req.cookies.user });
-});
-
-router.get('/enrollAdmin', function(req, res, next) {
-	enroll.enrollAdmin();
+router.get('/enrollAdmin', async function(req, res, next) {
+	await enroll.enrollAdmin();
 	res.redirect('/');
 })
 
-router.post('/registerUser', function(req, res, next) {
+router.post('/registerUser', async function(req, res, next) {
 	user = req.body.user;
 	console.log(user);
-	register.registerUser(user);
+	await register.registerUser(user);
 	res.cookie('user', user);
 	res.redirect('/');
 })
+
+router.post('/registerCar', async function(req, res, next) {
+ 	console.log('name : ', user);
+ 	var result = await invoke.invoke(req.cookies.user,"registerCar",[req.body.make,req.body.model,req.body.color,req.cookies.user]);
+	var multi = await query.query(req.cookies.user);
+	myCars = multi[0];
+	registeredCars = multi[1];
+	carsOnSale = multi[2];
+	console.log(myCars);
+	res.render('index',{name:req.cookies.user,myCars:myCars, registeredCars:registeredCars, 
+			carsOnSale:carsOnSale});
+})
+
+router.post('/sellMyCar', async function(req, res, next) {
+ 	console.log('name : ', user);
+ 	var result = await invoke.invoke(req.cookies.user,"sellMyCar",req.body['demo-category']);
+	var multi = await query.query(req.cookies.user);
+	carsOnSale = multi[2];
+	res.render('index',{name:req.cookies.user,myCars:myCars,registeredCars:registeredCars, 
+			carsOnSale:carsOnSale});
+})
+
+router.post('/buyUserCar', async function(req, res, next) {
+ 	console.log('name : ', user);
+ 	var result = await invoke.invoke(req.cookies.user,"buyUserCar",[req.body['demo-category'],req.cookies.user]);
+	var multi = await query.query(req.cookies.user);
+	myCars = multi[0];
+	registeredCars = multi[1];
+	carsOnSale = multi[2];
+	res.render('index',{name:req.cookies.user,myCars:myCars, registeredCars:registeredCars, 
+			carsOnSale:carsOnSale});
+})
+
+// example, how to use json object in router
+// router.post('/query', async function(req, res, next) {
+// 	console.log('name : ', user)
+// 	var result = await query.query(req.cookies.user)
+// 	console.log('result : ', result)
+// 	console.log('make : ', result['make'])
+
+// 	res.redirect('/');
+// })
 
 
 module.exports = router;

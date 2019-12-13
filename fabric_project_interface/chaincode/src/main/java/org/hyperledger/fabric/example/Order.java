@@ -1,48 +1,78 @@
 package org.hyperledger.fabric.example;
- 
+
 import java.util.Objects;
- 
+
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
 import com.owlike.genson.annotation.JsonProperty;
 
+@DataType()
 public class Order {
-	private String car_id;
+    
+	@Property()
+	private String carid;
+     
+	@Property()
 	private String make;
+    
+	@Property()
 	private String model;
-	private String color;
-	private String owner;
-	private int price;
-	private String status;
+
+	@Property()
+    private String color;
+	
+	@Property()
+    private String owner;
+	
+	@Property()
+    private int price;
+	
+	@Property()
+    private String status;
+	 
+	public String getCarid() {
+         return carid;
+    }
+
+	public String getMake() {
+         return make;
+    }
+	
+	public String getModel() {
+         return model;
+    }
+    
+	public String getColor() {
+         return color;
+    }
 
 	public String getOwner() {
-		return owner;
-	}
+         return owner;
+    }
 
-	public int getPrice() {
-		return price;
-	}
+    public int getPrice() {
+         return price;
+     }
 
-	public String getStatus() {
-		return status;
-	}
+     public String getStatus() {
+         return status;
+     }
 
-	public String getCarid() {
-		return car_id;
-	}
-	public void setStatus() {
-		status="done";
-	}
 
-	public Order(String ocar_id, String omake, String omodel, String ocolor,String oowner, int oprice)
-	{
-		car_id=ocar_id;
-		make=omake;
-		model=omodel;
-		color=ocolor;
-		owner=oowner;
-		this.price=oprice;
-		status="sale";
-	}
+     public Order(@JsonProperty("carid") final String carid, @JsonProperty("make") final String make, 
+					 @JsonProperty("model") final String model, @JsonProperty("color") final String color, 
+					 @JsonProperty("owner") final String owner, @JsonProperty("price") final int price, 
+					 @JsonProperty("status") final String status) {
+         this.carid=carid;
+         this.make=make;
+         this.model=model;
+         this.color=color;
+         this.owner=owner;
+         this.price=price;
+         this.status=status;
+     }
 }
+
+
+
